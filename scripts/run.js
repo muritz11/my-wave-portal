@@ -10,6 +10,8 @@ const main = async () => {
     console.log("Contract deployed by:", owner.address);
 
     let waveCount;
+    let shellCount;
+    shellCount = await waveContract.getTotalShellies();
     waveCount = await waveContract.getTotalWaves();// get total waves
 
     let waveTxn = await waveContract.wave();// call d wave function
@@ -19,8 +21,11 @@ const main = async () => {
 
     waveTxn = await waveContract.connect(jneDoe).wave();// call d wave fn but this time using a random user gen address
     await waveTxn.wait();
+    shellTxn = await waveContract.connect(jneDoe).buyShelly(1340);
+    await shellTxn.wait();
 
     waveCount = await waveContract.getTotalWaves();
+    shellCount = await waveContract.getTotalShellies();
 };
 
 
