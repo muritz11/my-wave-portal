@@ -1,31 +1,26 @@
 
 
 const main = async () => {
-    const [owner, jneDoe] = await hre.ethers.getSigners();
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
     const waveContract = await waveContractFactory.deploy();
     await waveContract.deployed();
 
     console.log("Contract deployed to:", waveContract.address);
-    console.log("Contract deployed by:", owner.address);
 
     let waveCount;
-    let shellCount;
-    shellCount = await waveContract.getTotalShellies();
     waveCount = await waveContract.getTotalWaves();// get total waves
+    console.log(waveCount)
 
-    let waveTxn = await waveContract.wave();// call d wave function
+    let waveTxn = await waveContract.wave("A message");// call d wave function in our smart contract
+    await waveTxn.wait();// wait for the txn to be mined
+
+    const [_, randomPerson] = await hre.ethers.getSigners();
+    waveTxn = await waveContract.connect(randomPerson).wave("Another message!");// call d wave fn but this time using a random user gen address
     await waveTxn.wait();
 
-    waveCount = await waveContract.getTotalWaves();// get total waves again
+    let allWaves = await waveContract.getAllWaves()
+    console.log(allWaves)
 
-    waveTxn = await waveContract.connect(jneDoe).wave();// call d wave fn but this time using a random user gen address
-    await waveTxn.wait();
-    shellTxn = await waveContract.connect(jneDoe).buyShelly(1340);
-    await shellTxn.wait();
-
-    waveCount = await waveContract.getTotalWaves();
-    shellCount = await waveContract.getTotalShellies();
 };
 
 
