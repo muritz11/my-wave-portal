@@ -1,11 +1,18 @@
 
-
+// because it's hard to test our SC with the frontend code
+// run.js is where we test out our SC to make sure everything is working fine before deploying
 const main = async () => {
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-    const waveContract = await waveContractFactory.deploy();
+    const waveContract = await waveContractFactory.deploy({
+        value: hre.ethers.utils.parseEther("0.1") // deploy contract and fund with 0.1 ether
+    });
     await waveContract.deployed();
 
     console.log("Contract deployed to:", waveContract.address);
+
+    // get contract balance
+    let contractBalance = await hre.ethers.provider.getBalance(waveContract.address)
+    console.log('contract balance: ', hre.ethers.utils.formatEther(contractBalance))
 
     let waveCount;
     waveCount = await waveContract.getTotalWaves();// get total waves
@@ -13,10 +20,15 @@ const main = async () => {
 
     let waveTxn = await waveContract.wave("A message");// call d wave function in our smart contract
     await waveTxn.wait();// wait for the txn to be mined
+    
+    // get contract balance
+    contractBalance = await hre.ethers.provider.getBalance(waveContract.address)
+    console.log('contract balance: ', hre.ethers.utils.formatEther(contractBalance))
 
-    const [_, randomPerson] = await hre.ethers.getSigners();
-    waveTxn = await waveContract.connect(randomPerson).wave("Another message!");// call d wave fn but this time using a random user gen address
-    await waveTxn.wait();
+
+    // const [_, randomPerson] = await hre.ethers.getSigners();
+    // waveTxn = await waveContract.connect(randomPerson).wave("Another message!");// call d wave fn but this time using a random user gen address
+    // await waveTxn.wait();
 
     let allWaves = await waveContract.getAllWaves()
     console.log(allWaves)

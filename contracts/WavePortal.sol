@@ -22,7 +22,7 @@ contract WavePortal {
     Wave[] waves;
 
 
-    constructor () {
+    constructor () payable {
         console.log("Woaaaaah, I just wrote a smart contract");
     }
 
@@ -34,6 +34,17 @@ contract WavePortal {
         waves.push(Wave(msg.sender, _message, block.timestamp));
 
         emit NewWave(msg.sender, block.timestamp, _message);
+
+        uint256 prizeAmount = 0.0001 ether;
+        //check if SC's balance is greater prize amount
+        require(
+            prizeAmount <= address(this).balance, 
+            "Trying to withdraw more money than the contract has."
+        );
+        // try to send amount to sender and return status value to bool variable success
+        (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+        require(success, "Failed to withdraw money from contract.");
+
     }
 
     // a function to return the waves array
