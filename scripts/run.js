@@ -18,8 +18,11 @@ const main = async () => {
     waveCount = await waveContract.getTotalWaves();// get total waves
     console.log(waveCount)
 
-    let waveTxn = await waveContract.wave("A message");// call d wave function in our smart contract
+    let waveTxn = await waveContract.wave("This is wave #1");// call d wave function in our smart contract
     await waveTxn.wait();// wait for the txn to be mined
+    
+    let waveTxn2 = await waveContract.wave("This is wave #2");
+    await waveTxn2.wait();
     
     // get contract balance
     contractBalance = await hre.ethers.provider.getBalance(waveContract.address)
@@ -30,8 +33,8 @@ const main = async () => {
     // waveTxn = await waveContract.connect(randomPerson).wave("Another message!");// call d wave fn but this time using a random user gen address
     // await waveTxn.wait();
 
-    let allWaves = await waveContract.getAllWaves()
-    console.log(allWaves)
+    // let allWaves = await waveContract.getAllWaves()
+    // console.log(allWaves)
 
 };
 
